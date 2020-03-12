@@ -1,0 +1,74 @@
+                                                       ___  ____  ____  ____  ____(R)
+                                                      /__    /   ____/   /   ____/   
+                                                     ___/   /   /___/   /   /___/    
+                                                       Statistics/Data Analysis      
+      
+      
+        ___  ____  ____  ____  ____ (R)
+       /__    /   ____/   /   ____/
+      ___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LP
+        Statistics/Data Analysis            StataCorp
+                                            4905 Lakeway Drive
+           MP - Parallel Edition            College Station, Texas 77845 USA
+                                            800-STATA-PC        http://www.stata.com
+                                            979-696-4600        stata@stata.com
+                                            979-696-4601 (fax)
+      
+      Single-user 8-core Stata perpetual license:
+             Serial number:  10699393
+               Licensed to:  Jack Test
+                             Test University
+      
+      Notes:
+            1.  Unicode is supported; see help unicode_advice.
+            2.  More than 2 billion observations are allowed; see help obs_advice.
+            3.  Maximum number of variables is set to 5000; see help set_maxvar.
+      
+     1 . use "/home/cal/Documents/Thesis 2020 Notes/stata_work/LFPR_MML_regression.dta"
+      
+     2 . sum
+      
+          Variable |        Obs        Mean    Std. Dev.       Min        Max
+      -------------+---------------------------------------------------------
+              DATE |     26,928    13863.96    4639.356       5844      21884
+      STATE_LFPR~D |     26,928    28.96078    15.67713          1         56
+             STATE |     26,928          26    14.71987          1         51
+        STATE_NAME |          0
+              LFPR |     26,928    65.89243    4.208944       49.5       77.1
+      -------------+---------------------------------------------------------
+          MML_DATE |     17,952     18293.5    2503.071      13454      21489
+         MML_DUMMY |     26,928    .1489528    .3560485          0          1
+      STATE_MIN_~E |     23,160    4.959663    2.250777       1.23         14
+      FED_MIN_WAGE |     26,928    4.884848    1.608359        2.3       7.25
+      ACT_MIN_WAGE |     26,928    5.160986    1.971309        2.3         14
+      
+     3 . reghdfe LFPR MML_DUMMY ACT_MIN_WAGE, absorb(i.STATE i.DATE i.STATE#c.DATE)
+      (MWFE estimator converged in 3 iterations)
+      
+      HDFE Linear regression                            Number of obs   =     26,928
+      Absorbing 3 HDFE groups                           F(   2,  26297) =     120.48
+                                                        Prob > F        =     0.0000
+                                                        R-squared       =     0.9382
+                                                        Adj R-squared   =     0.9367
+                                                        Within R-sq.    =     0.0091
+                                                        Root MSE        =     1.0587
+      
+      ------------------------------------------------------------------------------
+              LFPR |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+      -------------+----------------------------------------------------------------
+         MML_DUMMY |   .3062237   .0347872     8.80   0.000     .2380389    .3744084
+      ACT_MIN_WAGE |   .2277369   .0193983    11.74   0.000     .1897151    .2657586
+             _cons |   64.67147   .0998863   647.45   0.000     64.47569    64.86725
+      ------------------------------------------------------------------------------
+      
+      Absorbed degrees of freedom:
+      ------------------------------------------------------+
+        Absorbed FE | Categories  - Redundant  = Num. Coefs |
+      --------------+---------------------------------------|
+              STATE |        51           0          51     |
+               DATE |       528           1         527     |
+       STATE#c.DATE |        51           0          51    ?|
+      ------------------------------------------------------+
+      ? = number of redundant parameters may be higher
+      
+     4 . translate @Results reglog.txt
